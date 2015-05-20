@@ -3,7 +3,8 @@ var TuxStateLoader = require('./TuxStatePlugin').TuxStateLoader,
     TuxQueLoader = require('./TuxQuePlugin').TuxQueLoader,
     TuxTrade4GLoader = require('./TuxTrade4GPlugin').TuxTrade4GLoader,
     WarningLoader = require('./Warning').WarningLoader,
-    TuxLcuPointLoader = require('./TuxLcuPointPlugin').TuxLcuPointLoader;
+    TuxLcuPointLoader = require('./TuxLcuPointPlugin').TuxLcuPointLoader,
+    Alarm3GESSLoader = require('./Alarm3GESSPlugin').Alarm3GESSLoader;
 
 exports.panguLaLoad = function(type, data, host){
     if( "TuxState" == type ){
@@ -23,5 +24,8 @@ exports.panguLaLoad = function(type, data, host){
     }
     if( "TuxLcuPoint" == type ){
         TuxLcuPointLoader(data, host);
+    }
+    if( "Alarm3GESS" == type ){
+        Alarm3GESSLoader(data, host);
     }
 };
