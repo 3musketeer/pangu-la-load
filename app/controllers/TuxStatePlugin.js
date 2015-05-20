@@ -43,7 +43,8 @@ exports.TuxStateLoader = function(data, host){
 			if (data.MAX >= 10) return data;
 			else return null;
 		}))
-		.add(engine.top("TimeOutTop", "MAX", "day,month"))    //按日、月、年分别对流程的最大执行时间排名
+		.add(engine.top("TimeOutTop", "MAX", "day"))    //按日、月、年分别对流程的最大执行时间排名
+		.add(engine.top("TimeOutTop", "MAX", "month"))    //按日、月、年分别对流程的最大执行时间排名
 		.add(engine.group("TimeOutStat", function(data){
 			var count = {"avg_gt_2s":0,"avg_gt_5s":0,"avg_gt_30s":0,"avg_gt_60s":0,"avgcount":data.CALLED,
 				"max_gt_2s":0,"max_gt_5s":0,"max_gt_30s":0,"max_gt_60s":0,"maxcount":1};

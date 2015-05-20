@@ -8,7 +8,8 @@ module.exports = {
 	  root: rootPath,
       redis: {
           host:'localhost',
-          port:'6379'
+          port:'6379',
+          expire: 30 * 24 * 60 * 60
       }
   }
 }

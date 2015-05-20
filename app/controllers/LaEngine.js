@@ -77,7 +77,8 @@ exports.LaEngine = function() {
 	this.top = function(name, field, scope, type, count, format) {
 		type = type || "max";
 		scope = scope || "day"
-		count = count || 500;
+		count = count || 1000;
+        countip = 200;
 
 
 		dtList = ["hours", "day", "month", "year"];
@@ -97,17 +98,30 @@ exports.LaEngine = function() {
 
 			if (value) {
 				for(var i=0; i<dtList.length; ++i) {
-					var dt = dtList[i],
-						multi = client.multi();
+					var dt = dtList[i];
 
 					if (~scope.toLowerCase().indexOf(dt)) {
-						var tabname = data.type + name + dt.toUpperCase() + formatDate(dtFormat[dt], data);
+						var tabname = data.type + name + dt.toUpperCase() + formatDate(dtFormat[dt], data),
+                            tabnameip = tabname + '_' + data.data.host;
                         client.zadd([tabname, value, JSON.stringify(data.data)], redis.print);
+                        client.zadd([tabnameip, value, JSON.stringify(data.data)], redis.print);
                         if ("max" == type.toLowerCase()){
                             client.zremrangebyrank([tabname, 0, -count-1], redis.print);
+                            client.zremrangebyrank([tabnameip, 0, -countip-1], redis.print);
                         } else {
                             client.zremrangebyrank([tabname, count, -1], redis.print);
+                            client.zremrangebyrank([tabnameip, countip, -1], redis.print);
                         }
+                        client.ttl([tabname], function(err, isexist){
+                            if(isexist == -1){
+                                client.expire([tabname, config.redis.expire], redis.print)
+                            }
+                        })
+                        client.ttl([tabnameip], function(err, isexist){
+                            if(isexist == -1){
+                                client.expire([tabnameip, config.redis.expire], redis.print)
+                            }
+                        })
 					}
 				}
 
