@@ -54,11 +54,8 @@ exports.Alarm3GESSLoader = function(data, host){
             count[data['rspcode']] = 1;
             return {"$inc": count}
         },{
-            group1 : function(data){
-                return {'host': data.host, 'type': 'code', 'servicename': data.servicename}
-            },
-            group2 : function(data){
-                return {'host': data.host, 'type': 'code', 'operatename': data.operatename}
+            group : function(data){
+                return {'host': data.host, 'type': 'code', 'servicename': data.servicename, 'operatename': data.operatename}
             }
         },"day"))
 /*        .add(engine.group("Group", function(data){
