@@ -70,6 +70,22 @@ exports.TuxStateLoader = function(data, host){
 		}, {
 			"group":function(data){return {"TRANSCODE":data.TRANSCODE, "host":data.host};}
 		},"day"))
+		.add(engine.sum("CalledSumByLcuByHost", "CALLED",
+			{
+				"byAllServer": function(data){
+					var obj={};obj.TRANSCODE=data.TRANSCODE;obj.host=data.host;
+					return obj;
+				}
+			},
+			"day,month"))    //按日、月对流程的调用次数按主机进行统计
+		.add(engine.sum("CalledSumBySvrByHost", "CALLED",
+			{
+				"byAllServer": function(data){
+					var obj={};obj.SVRNAME=data.SVRNAME;obj.host=data.host;
+					return obj;
+				}
+			},
+			"day,month"))    //按日、月对进程的调用次数按主机进行统计
 		.add(engine.sum("CalledSumBySvr", "CALLED",
 			{
 				//"byHostServer": ["SVRNAME", "host"],
