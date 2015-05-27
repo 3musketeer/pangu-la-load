@@ -1,7 +1,7 @@
 var mongoose = require('mongoose'),db = mongoose.connection.db;
 var logger = require('../../log').logger;
 var parseTrans = require('./parser').parseTransByExpat,
-    panguLaLoad = require('./pangu').panguLaLoad;
+    loaderFactory = require('./factory');
 
 exports.receiveData = function(req, res) {
      
@@ -15,6 +15,12 @@ exports.receiveData = function(req, res) {
     //logger.debug("data="+data);
     logger.debug("host="+host);  
     logger.debug("type="+type);
+    var loader = loaderFactory.createLoader(type);
+    if( null == loader ){
+        logger.error("===== [ ERROR ] 解析器不存在！=====");
+        res.send("no");
+        return;
+    }
 
     if(data != undefined){
         if (data instanceof Array) {
@@ -24,13 +30,13 @@ exports.receiveData = function(req, res) {
                 if( 'TuxTrade4G' == type){
                     item = parseTrans(item);
                 }
-                panguLaLoad(type, item, host);
+                loader(item, host);
             });
         }else{
             if( 'TuxTrade4G' == type){
                 data = parseTrans(data);
             }
-            panguLaLoad(type, data, host);
+            loader(data, host);
          }
     }
     res.send("ok");

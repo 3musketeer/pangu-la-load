@@ -1,7 +1,7 @@
 var LaEngine = require('./LaEngine').LaEngine,
 	logger = require('../../log').logger;
 
-function Alarm3GESSParser(host) {
+function AlarmWS3GESSParser(host) {
 	return function(data,next) {
         try{
             var arr = data.data.split(String.fromCharCode(1))
@@ -45,9 +45,9 @@ function Alarm3GESSParser(host) {
 	}
 }
 
-exports.Alarm3GESSLoader = function(data, host){
+exports.AlarmWS3GESSLoader = function(data, host){
 	var engine = new LaEngine();
-	engine.add(Alarm3GESSParser(host)) //解析字串
+	engine.add(AlarmWS3GESSParser(host)) //解析字串
 		.add(engine.save("YYYYMMDD"))    //分主机按天保存
         .add(engine.group("Group",function(data){
             var count = {};
@@ -58,18 +58,6 @@ exports.Alarm3GESSLoader = function(data, host){
                 return {'host': data.host, 'type': 'code', 'servicename': data.servicename, 'operatename': data.operatename}
             }
         },"day"))
-/*        .add(engine.group("Group", function(data){
-            var count = {};
-            count[data['rspdesc']] = 1;
-            return {"$inc": count}
-        },{
-            group1 : function(data){
-                return {'host': data.host, 'type': 'desc', 'servicename': data.servicename}
-            },
-            group2 : function(data){
-                return {'host': data.host, 'type': 'desc', 'operatename': data.operatename}
-            }
-        },"day"))
-*/		.add(engine.showError())//显示错误
+		.add(engine.showError())//显示错误
 		.run(data,"Alarm3GESS");
 }

@@ -4,7 +4,12 @@ var TuxStateLoader = require('./TuxStatePlugin').TuxStateLoader,
     TuxTrade4GLoader = require('./TuxTrade4GPlugin').TuxTrade4GLoader,
     WarningLoader = require('./Warning').WarningLoader,
     TuxLcuPointLoader = require('./TuxLcuPointPlugin').TuxLcuPointLoader,
-    Alarm3GESSLoader = require('./Alarm3GESSPlugin').Alarm3GESSLoader;
+    AlarmWS3GESSLoader = require('./AlarmWS3GESSPlugin').AlarmWS3GESSLoader,
+    AlarmWSCUSTLoader = require('./AlarmWSCUSTPlugin').AlarmWSCUSTLoader,
+    AlarmWSCRMLoader = require('./AlarmWSCRMPlugin').AlarmWSCRMLoader,
+    AlarmWSNUMLoader = require('./AlarmWSNUMPlugin').AlarmWSNUMLoader,
+    AlarmWSCBSSLoader = require('./AlarmWSCBSSPlugin').AlarmWSCBSSLoader,
+    AlarmWS3GHTTPLoader = require('./AlarmWS3GHTTPPlugin').AlarmWS3GHTTPLoader;
 
 exports.panguLaLoad = function(type, data, host){
     if( "TuxState" == type ){
@@ -25,7 +30,22 @@ exports.panguLaLoad = function(type, data, host){
     if( "TuxLcuPoint" == type ){
         TuxLcuPointLoader(data, host);
     }
-    if( "Alarm3GESS" == type ){
-        Alarm3GESSLoader(data, host);
+    if( "AlarmWS3GESS" == type ){
+        AlarmWS3GESSLoader(data, host);
+    }
+    if( "AlarmWSCUST" == type ){
+        AlarmWSCUSTLoader(data, host);
+    }
+    if( "AlarmWSCRM" == type ){
+        AlarmWSCRMLoader(data, host);
+    }
+    if( "AlarmWSNUM" == type ){
+        AlarmWSNUMLoader(data, host);
+    }
+    if( "AlarmWS3GHTTP" == type ){
+        AlarmWS3GHTTPLoader(data, host);
+    }
+    if( "AlarmWSCBSS" == type ){
+        AlarmWSCBSSLoader(data, host);
     }
 };
