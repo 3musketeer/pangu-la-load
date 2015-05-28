@@ -17,17 +17,17 @@ function AlarmWSCUSTParser(host) {
                 rsptime: arr[7],
 //                actionrelation: arr[8],
 //                routetype: arr[9],
-                routevalue: arr[10],
-                procid: arr[11],
-                transido: arr[12],
+//                routevalue: arr[10],
+//                procid: arr[11],
+//                transido: arr[12],
 //                processtime: arr[13],
                 rsptype: arr[14],
                 rspcode: arr[15],
-                rspdesc: arr[16],
-                operid: arr[17],
-                provincecode: arr[18],
-                eparchycode: arr[19],
-                citycode: arr[20],
+                rspdesc: arr[16]
+//                operid: arr[17],
+//                provincecode: arr[18],
+//                eparchycode: arr[19],
+//                citycode: arr[20],
 //                channelid: arr[21],
 //                channeltype: arr[22],
 //                accesstype: arr[23],
@@ -49,15 +49,40 @@ exports.AlarmWSCUSTLoader = function(data, host){
 	var engine = new LaEngine();
 	engine.add(AlarmWSCUSTParser(host)) //解析字串
 		.add(engine.save("YYYYMMDD"))    //分主机按天保存
-        .add(engine.group("Group",function(data){
+        .add(engine.group("GroupHost",function(data){ //分主机统计
             var count = {};
             count[data['rspcode']] = 1;
             return {"$inc": count}
         },{
             group : function(data){
-                return {'host': data.host, 'type': 'code', 'servicename': data.servicename, 'operatename': data.operatename}
+                return {'host': data.host, 'servicename': data.servicename, 'operatename': data.operatename}
             }
         },"day"))
+        .add(engine.group("Group",function(data){ //分组统计Alarm_WS所有主机记录
+            var count = {};
+            count[data['rspcode']] = 1;
+            return {"$inc": count}
+        },{
+            group : function(data){
+                return {'servicename': data.servicename, 'operatename': data.operatename}
+            }
+        },"day"))
+        .add(engine.sum("CalledSum", function(data){
+            var count = {}
+            if(data["rspcode"] == "0000"){
+                count["0000"] = 1;
+            }
+            count["_total"] = 1;
+            return count;
+        }, {
+            byHost: function(data){
+                var obj = {}; obj['host'] = data.host;
+                return obj;
+            },
+            byAll: function(data){
+                return {"host": "all"};
+            }
+        }, "day"))
 		.add(engine.showError())//显示错误
 		.run(data,"AlarmWSCUST");
 }
