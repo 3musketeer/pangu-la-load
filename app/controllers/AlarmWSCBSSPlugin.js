@@ -31,22 +31,16 @@ exports.AlarmWSCBSSLoader = function(data, host){
 	var engine = new LaEngine();
 	engine.add(AlarmWSCBSSParser(host)) //解析字串
 		.add(engine.save("YYYYMMDD"))    //分主机按天保存
-        .add(engine.group("GroupHost",function(data){ //分主机统计
+        .add(engine.group("Group",function(data){ //分主机统计
             var count = {};
             count[data['rspcode']] = 1;
             return {"$inc": count}
         },{
-            group : function(data){
+            groupHost : function(data){
                 return {'host': data.host, 'servicename': data.servicename, 'operatename': data.operatename}
-            }
-        },"day"))
-        .add(engine.group("Group",function(data){ //分组统计Alarm_WS所有主机记录
-            var count = {};
-            count[data['rspcode']] = 1;
-            return {"$inc": count}
-        },{
-            group : function(data){
-                return {'servicename': data.servicename, 'operatename': data.operatename}
+            },
+            groupAll : function(data){
+                return {'host': "all", 'servicename': data.servicename, 'operatename': data.operatename}
             }
         },"day"))
         .add(engine.sum("CalledSum", function(data){
