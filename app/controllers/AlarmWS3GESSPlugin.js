@@ -78,5 +78,5 @@ exports.AlarmWS3GESSLoader = function(data, host){
             }
         }, "day"))
 		.add(engine.showError())//显示错误
-		.run(data,"Alarm3GESS");
+		.run(data,"AlarmWS3GESS");
 }
