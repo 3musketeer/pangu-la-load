@@ -70,11 +70,22 @@ exports.AlarmWSNUMLoader = function(data, host){
             return count;
         }, {
             byHost: function(data){
-                var obj = {}; obj['host'] = data.host;
-                return obj;
+                return {"host": data.host};
+            },
+            byHostSvr: function(data){
+                return {"host": data.host, "servicename": data.servicename}
+            },
+            byHostOpr: function(data){
+                return {"host": data.host, "operatename": data.operatename}
             },
             byAll: function(data){
                 return {"host": "all"};
+            },
+            byAllSvr: function(data){
+                return {"host": "all", "servicename": data.servicename}
+            },
+            byAllOpr: function(data){
+                return {"host": "all", "operatename": data.operatename}
             }
         }, "day"))
 		.add(engine.showError())//显示错误
